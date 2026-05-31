@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PupiStock</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Eb+Garamond:ital,wght@0,400..800;1,400..800&family=Manrope:wght@200..800&display=swap"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Eb+Garamond:ital,wght@0,400..800;1,400..800&amp;family=Manrope:wght@200..800&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              'tertiary-container': '#d47070',
+              'surface-container-low': '#f6f0e8',
+              'surface-variant': '#ece6dc',
+              'on-secondary': '#ffffff',
+              'on-primary-fixed-variant': '#8a4518',
+              'surface-container-high': '#ece6dc',
+              'on-tertiary-fixed-variant': '#6e3030',
+              'on-secondary-fixed-variant': '#504840',
+              tertiary: '#8c3c3c',
+              'on-tertiary-container': '#3a2020',
+              'surface-dim': '#dcd6cc',
+              background: '#faf5ee',
+              surface: '#faf5ee',
+              'primary-fixed-dim': '#f0a878',
+              'on-primary-container': '#fbe8d8',
+              'surface-bright': '#faf5ee',
+              'secondary-fixed': '#eae2da',
+              'on-tertiary-fixed': '#2e1515',
+              'on-surface': '#3a302a',
+              'on-primary-fixed': '#401a08',
+              'on-background': '#3a302a',
+              'on-secondary-fixed': '#2a2420',
+              'tertiary-fixed-dim': '#e8a0a0',
+              'inverse-primary': '#f0a878',
+              'primary-fixed': '#fbe8d8',
+              'on-primary': '#ffffff',
+              secondary: '#78706a',
+              'on-error-container': '#7a1a10',
+              'surface-container': '#f2ece4',
+              'inverse-on-surface': '#faf5ee',
+              primary: '#c2652a',
+              'error-container': '#fce4e0',
+              'on-tertiary': '#ffffff',
+              'on-secondary-container': '#605850',
+              'surface-container-lowest': '#ffffff',
+              'outline-variant': '#d8d0c8',
+              'secondary-container': '#eae2da',
+              'surface-tint': '#c2652a',
+              'primary-container': '#e08850',
+              'on-error': '#ffffff',
+              'inverse-surface': '#3a302a',
+              'secondary-fixed-dim': '#cec6be',
+              'on-surface-variant': '#605850',
+              error: '#c0392b',
+              'tertiary-fixed': '#fce0e0',
+              'surface-container-highest': '#e6e0d6',
+              outline: '#9a9088',
+            },
+            borderRadius: {
+              DEFAULT: '0.25rem',
+              lg: '0.5rem',
+              xl: '0.75rem',
+              full: '9999px',
+            },
+            fontFamily: {
+              headline: ['EB Garamond', 'serif'],
+              display: ['EB Garamond', 'serif'],
+              body: ['Manrope', 'sans-serif'],
+              label: ['Manrope', 'sans-serif'],
+            },
+            boxShadow: {
+              soft: '0 2px 16px rgba(58, 48, 42, 0.04)',
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        background-color: #faf5ee;
+        font-family: 'Manrope', Arial, Helvetica, sans-serif;
+        color: #3a302a;
+      }
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6,
+      .serif-text {
+        font-family: 'EB Garamond', 'Times New Roman', Times, serif;
+      }
+      .grain-overlay {
+        background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuCbBqh0D9Ns43C3ntmy58q8sdm2GW6iWWgjZmTbQ1D36xZ7VTXV7lQKzt6vPrCd32znTDvZJhHqEG42zp2DuCX2drqVDOv3G3dO3mzWZUckdek3_t5YR9Z2gwNWsX0hzP_cMkdJRtkKeN9BqviwOcgnCPBZKdlhhK-0bw91efVVJlIaqOSp8PNPFIFJ_Uk_4r16k9zCf5RuwY7EPUoQux6pxChuOb56UgkuKs1Lgwppi-N1t8c_LLgKMnvF9Kd4bR3nceEkmouQKag);
+        opacity: 0.05;
+        pointer-events: none;
+      }
+      input:focus {
+        outline: none;
+        border-color: #c2652a !important;
+        box-shadow: 0 0 0 1px #c2652a;
+      }
+      .material-symbols-outlined {
+        font-variation-settings:
+          'FILL' 0,
+          'wght' 400,
+          'GRAD' 0,
+          'opsz' 24;
+        vertical-align: middle;
+      }
+      .sidebar-transition {
+        transition:
+          transform 0.3s ease-in-out,
+          width 0.3s ease-in-out;
+      }
+      .scrim-active {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      .drawer-open {
+        transform: translateX(0) !important;
+      }
+      input:checked + div .check-icon {
+        display: block;
+      }
+      input:checked ~ .item-text {
+        text-decoration: line-through;
+        opacity: 0.5 !important;
+      }
+      form input,
+      form select,
+      form textarea {
+        background-color: #f6f0e8 !important;
+        color: #232220 !important;
+        border-radius: 0.75rem !important;
+        padding: 0.75rem 1rem !important;
+        box-shadow: none !important;
+        transition: all 0.2s ease-in-out !important;
+        border-width: 1px !important;
+        --tw-border-opacity: 1 !important;
+        border-color: rgb(216 208 200 / var(--tw-border-opacity, 1)) !important;
+      }
+      /* Custom scrollbar for warm minimalism */
+      ::-webkit-scrollbar {
+        width: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #faf5ee;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #d8d0c8;
+        border-radius: 10px;
+      }
+      button[type='submit'],
+      .btn-submit {
+        background-color: #c2652a; /* primary */
+        color: #fff; /* on-primary */
+        border-radius: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        box-shadow: 0 2px 16px rgba(58, 48, 42, 0.04);
+        border: none;
+        transition:
+          background 0.2s,
+          transform 0.1s;
+      }
+
+      button[type='submit']:hover,
+      .btn-submit:hover {
+        background-color: #e08850; /* primary-container */
+        color: #401a08; /* on-primary-fixed */
+        transform: translateY(-2px) scale(1.03);
+      }
+
+      button[type='submit']:active,
+      .btn-submit:active {
+        background-color: #a35422; /* darker primary */
+        color: #fff;
+        transform: scale(0.98);
+      }
+      .producto-tachable {
+        cursor: pointer;
+        transition: opacity 0.2s;
+      }
+      .producto-tachable.tachado {
+        text-decoration: line-through;
+        opacity: 0.5;
+      }
+    </style>
+  </head>
+  <body class="bg-background text-on-surface min-h-screen">
+    {% if request.resolver_match.url_name != 'login' %}
+    <!-- Navigation Drawer (Shared Component) -->
+    <aside
+      class="fixed left-0 top-0 h-full z-50 -translate-x-full transition-all duration-300 ease-in-out bg-surface border-r border-outline-variant/60 w-64 md:translate-x-0"
+      id="drawer"
+    >
+      <div class="flex flex-col h-full p-6">
+        <div class="mb-10" onclick="toggleDrawer()">
+          <span
+            class="font-headline text-2xl font-bold text-primary dark:text-primary-fixed-dim"
+            >PupiStock</span
+          >
+        </div>
+        <nav class="flex flex-col gap-2">
+          <!-- Inactive Tab -->
+          <a
+            id="category"
+            class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high transition-colors font-body text-label-large font-medium rounded-lg"
+            href="{% url 'category_list' %}"
+            ><span class="material-symbols-outlined"> category </span
+            >Categorías</a
+          >
+          <a
+            id="product"
+            class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high transition-colors font-body text-label-large font-medium rounded-lg"
+            href="{% url 'product_list' %}"
+          >
+            <span class="material-symbols-outlined">inventory_2</span>
+            Productos
+          </a>
+          <!-- Active Tab: Lista de Compras -->
+          <a
+            id="purchase"
+            class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high transition-colors font-body text-label-large font-medium rounded-lg"
+            href="{% url 'purchase_list' %}"
+          >
+            <span class="material-symbols-outlined">shopping_cart</span>Compras
+          </a>
+        </nav>
+        <div class="mt-auto pt-6 border-t border-outline-variant/30">
+          <a
+            class="block py-3 px-5 rounded text-accent font-semibold"
+            href="{% url 'logout' %}"
+          >
+            <div
+              class="flex items-center gap-3 px-4 py-3 text-on-surface-variant"
+            >
+              <span class="material-symbols-outlined">logout</span>
+
+              <span class="text-label-large font-medium">Salir</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </aside>
+    {% endif %}
+    <!-- Drawer Scrim (Mobile) -->
+    <div
+      class="fixed inset-0 bg-black/20 z-40 opacity-0 pointer-events-none transition-opacity duration-300 md:hidden"
+      id="scrim"
+      onclick="toggleDrawer()"
+    ></div>
+    <div class="min-h-screen flex flex-col">
+      {% if request.resolver_match.url_name != 'login' %}
+      <header
+        class="sticky top-0 w-full z-30 flex justify-between items-center px-4 bg-surface h-16 shadow-sm border-b border-outline-variant/30"
+      >
+        <div class="flex items-center gap-4">
+          <button
+            class="md:hidden hover:bg-surface-container-low transition-colors p-2 rounded-full active:scale-95 transition-transform text-primary"
+            onclick="toggleDrawer()"
+          >
+            <span class="material-symbols-outlined">menu</span>
+          </button>
+        </div>
+        <p class="mb-4">Bienvenido, {{ user.username }}</p>
+      </header>
+      <!-- TopAppBar (Shared Component) -->
+      {% endif %}
+      <main
+        class="flex-1 flex flex-col items-center justify-center px-4 md:ml-64 transition-all duration-300"
+      >
+        {% block content %}{% endblock %}
+      </main>
+      <footer
+        class="md:ml-64 mt-6 text-center text-xs text-gray-500 uppercase tracking-wider"
+      >
+        PupiStock Systems © 2026
+      </footer>
+    </div>
+    <script>
+      function toggleDrawer() {
+        const drawer = document.getElementById('drawer');
+        const scrim = document.getElementById('scrim');
+        drawer.classList.toggle('drawer-open');
+        scrim.classList.toggle('scrim-active');
+      }
+
+      // Add some atmospheric micro-interactions
+      document.querySelectorAll('label').forEach((item) => {
+        item.addEventListener('mousedown', () => {
+          item.style.transform = 'scale(0.98)';
+        });
+        item.addEventListener('mouseup', () => {
+          item.style.transform = 'scale(1)';
+        });
+        item.addEventListener('mouseleave', () => {
+          item.style.transform = 'scale(1)';
+        });
+      });
+
+      // Si la url coincide con las rutas de categoría, producto o compra, resalta el enlace correspondiente
+      document.addEventListener('DOMContentLoaded', function () {
+        // ...tu código aquí...
+
+        const currentPath = window.location.pathname;
+        const categoryEl = document.getElementById('category');
+        const productEl = document.getElementById('product');
+        const purchaseEl = document.getElementById('purchase');
+
+        if (currentPath.startsWith('/categorias')) {
+          categoryEl?.classList.add(
+            'bg-primary-container',
+            'text-on-primary-container',
+          );
+          console.log('Resaltando categoría');
+        } else if (currentPath.startsWith('/productos')) {
+          productEl?.classList.add(
+            'bg-primary-container',
+            'text-on-primary-container',
+          );
+          console.log('Resaltando producto');
+        } else if (currentPath.startsWith('/compras')) {
+          purchaseEl?.classList.add(
+            'bg-primary-container',
+            'text-on-primary-container',
+          );
+        }
+      });
+      document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.producto-tachable').forEach(function (el) {
+          el.addEventListener('click', function () {
+            el.classList.toggle('tachado');
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

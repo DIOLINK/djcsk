@@ -1,0 +1,43 @@
+from django.db import models
+from django.contrib.auth import get_user_model
+
+class Category(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    
+    class Meta:
+        verbose_name = "Categoría"
+        verbose_name_plural = "Categorías"
+    
+    def __str__(self):
+        return self.name
+
+class Product(models.Model):
+    name = models.CharField(max_length=100)
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, related_name="products")
+    unit = models.CharField(max_length=32, default="Unidad")
+    quantity = models.IntegerField(default=0)
+    min_stock = models.IntegerField(default=1)
+    active = models.BooleanField(default=True)
+
+    class Meta:
+        verbose_name = "Producto"
+        verbose_name_plural = "Productos"
+
+    def __str__(self):
+        return self.name
+
+class Purchase(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="purchases")
+    user = models.ForeignKey(get_user_model(), on_delete=models.PROTECT, related_name="purchases")
+    date = models.DateField(auto_now_add=True)
+    quantity = models.PositiveIntegerField()
+    price = models.DecimalField(max_digits=8, decimal_places=2)
+    store = models.CharField(max_length=100, blank=True, null=True)
+
+    class Meta:
+        verbose_name = "Compra"
+        verbose_name_plural = "Compras"
+        ordering = ["-date"]
+
+    def __str__(self):
+        return f"{self.product} ({self.quantity}) @ {self.price}"

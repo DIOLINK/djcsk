@@ -1,0 +1,42 @@
+services:
+  db:
+    image: postgres:15-alpine
+    env_file: .env
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  web:
+    build: .
+    env_file: .env
+    environment:
+      - DJANGO_SUPERUSER_USERNAME=${SU_USERNAME}
+      - DJANGO_SUPERUSER_PASSWORD=${SU_PASSWORD}
+      - DJANGO_SUPERUSER_EMAIL=${SU_EMAIL}
+    command: >
+      sh -c "./wait-for-it.sh db:5432 -- python manage.py migrate && python manage.py collectstatic --noinput && python import_products.py && python manage.py createsuperuser --noinput || true && gunicorn pupistock.wsgi:application --bind 0.0.0.0:8000"
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+
+  ngrok:
+    image: ngrok/ngrok:latest
+    restart: unless-stopped
+    command: http web:8000
+    env_file: .env
+    environment:
+      - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}
+    depends_on:
+      - web
+    ports:
+      - "4040:4040"
+volumes:
+  pgdata:

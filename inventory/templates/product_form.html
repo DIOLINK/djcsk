@@ -1,0 +1,25 @@
+{% extends "base.html" %} {% block content %}
+<div class="max-w-xl mx-auto py-8">
+  <h2 class="text-2xl font-semibold text-primary mb-4">
+    {% if form.instance.pk %}Editar{% else %}Nuevo{% endif %} Producto
+  </h2>
+  <form method="post" class="space-y-4">
+    {% csrf_token %}{% for field in form %}
+    <div class="mb-4">
+      <label
+        for="{{ field.id_for_label }}"
+        class="block mb-1 font-semibold text-primary"
+        >{{ field.label }}</label
+      >
+      {{ field }} {% if field.errors %}
+      <p class="text-sm text-red-500 mt-1">{{ field.errors }}</p>
+      {% endif %}
+    </div>
+    {% endfor %}
+    <button type="submit" class="px-4 py-2 bg-primary text-white rounded">
+      Guardar
+    </button>
+    <a href="{% url 'product_list' %}" class="ml-4">Cancelar</a>
+  </form>
+</div>
+{% endblock %}

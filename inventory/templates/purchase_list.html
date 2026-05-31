@@ -1,0 +1,39 @@
+{% extends "base.html" %} {% block content %}
+<div class="max-w-2xl mx-auto py-8">
+  <h2 class="text-2xl font-semibold text-primary mb-4">Compras</h2>
+  <a
+    class="inline-block mb-4 px-4 py-2 bg-primary text-white rounded"
+    href="{% url 'purchase_create' %}"
+    >+ Registrar Compra</a
+  >
+  <form method="get" class="mb-4 flex flex-wrap gap-2">
+    <input type="text" name="nombre" value="{{ filtros.nombre }}" placeholder="Producto" class="border p-1 rounded">
+    <select name="categoria" class="border p-1 rounded">
+      <option value="">Categorías</option>
+      {% for cat in categories %}
+      <option value="{{ cat.id }}" {% if filtros.categoria|default_if_none:""|stringformat:"s" == cat.id|stringformat:"s" %}selected{% endif %}>{{ cat.name }}
+      </option>
+      {% endfor %}
+    </select>
+    <input type="number" name="quantity" value="{{ filtros.quantity }}" placeholder="Cantidad exacta"
+      class="border p-1 w-32 rounded">
+    <button type="submit" class="px-4 py-2 text-white rounded primary-container">Filtrar</button>
+  </form>
+  <ul class="divide-y">
+    {% for c in purchases %}
+    <li class="flex flex-col sm:flex-row justify-between py-2">
+      <span
+        ><span class="font-bold producto-tachable">{{ c.product }} </span>- {{ c.quantity }} u · ${{ c.price|default_if_none:"0" }}<span class="ml-2 text-gray-700"
+          >{% if c.store %}| {{ c.store }}{% endif %}</span
+        ></span
+      >
+      <a class="text-accent ml-2" href="{% url 'purchase_update' c.pk %}"
+        >Editar</a
+      >
+    </li>
+    {% empty %}
+    <li>No hay compras cargadas.</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}
