@@ -11,7 +11,7 @@ Este proyecto te permite levantar una app Django completa con PostgreSQL y expon
 1. **Clona este repositorio**
 
    ```sh
-   git clone [https://github.com/DIOLINK/djcsk.git](https://github.com/DIOLINK/djcsk.git)
+   git clone https://github.com/DIOLINK/djcsk.git
    cd DJCSK
    ```
 
