@@ -22,4 +22,9 @@
     <a href="{% url 'product_list' %}" class="ml-4">Cancelar</a>
   </form>
 </div>
+<script>
+  document.getElementById('id_price').addEventListener('focus', function () {
+    this.select();
+  });
+</script>
 {% endblock %}

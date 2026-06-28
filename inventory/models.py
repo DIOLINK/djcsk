@@ -23,6 +23,7 @@ class Product(models.Model):
     class Meta:
         verbose_name = "Producto"
         verbose_name_plural = "Productos"
+        ordering = ["name"]
 
     def __str__(self):
         return self.name

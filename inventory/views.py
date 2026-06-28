@@ -108,6 +108,12 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
     template_name = "product_form.html"
     success_url = reverse_lazy('product_list')
 
+    def get_success_url(self):
+        next_url = self.request.GET.get('next')
+        if next_url:
+            return next_url
+        return self.success_url
+
     def form_valid(self, form):
         response = super().form_valid(form)
         messages.success(self.request, f'Producto "{self.object.name}" creado correctamente.')
@@ -119,6 +125,12 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
     form_class = ProductForm
     template_name = "product_form.html"
     success_url = reverse_lazy('product_list')
+
+    def get_success_url(self):
+        next_url = self.request.GET.get('next')
+        if next_url:
+            return next_url
+        return self.success_url
 
     def form_valid(self, form):
         response = super().form_valid(form)
