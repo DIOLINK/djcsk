@@ -41,18 +41,20 @@
         <span class="font-bold">{{ p.name }}</span>
         <span class="ml-2 text-gray-700">| {{ p.category }}</span>
       </div>
-      <div class="flex items-center gap-3">
+      <div class="flex justify-between items-center gap-3">
         <span>Stock: {{ p.quantity }}</span>
         {% if p.price %}
         {{ p.price|ars }}
         {% endif %}
-        <form method="post" action="{% url 'product_delete' p.pk %}" onsubmit="return confirm('¿Eliminar el producto &quot;{{ p.name }}&quot;?')" class="inline">
-          {% csrf_token %}
-          <button type="submit" title="Eliminar" class="text-red-400 hover:text-red-600 transition-colors">
-            <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 0,'wght' 300">delete</span>
-          </button>
-        </form>
-        <a class="text-accent hover:underline" href="{% url 'product_update' p.pk %}">Editar</a>
+      <div class="flex justify-between items-center gap-3">
+          <form method="post" action="{% url 'product_delete' p.pk %}" onsubmit="return confirm('¿Eliminar el producto &quot;{{ p.name }}&quot;?')" class="inline">
+            {% csrf_token %}
+            <button type="submit" title="Eliminar" class="text-red-400 hover:text-red-600 transition-colors">
+              <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 0,'wght' 300">delete</span>
+            </button>
+          </form>
+          <a class="text-accent hover:underline" href="{% url 'product_update' p.pk %}">Editar</a>
+      </div>
       </div>
     </li>
     {% empty %}

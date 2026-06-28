@@ -25,7 +25,7 @@
         <span class="font-bold producto-tachable">{{ p.name }}</span>
         <span class="ml-2 text-gray-700">| {{ p.category }}</span>
       </div>
-      <div>
+      <div class="flex justify-between">
         {% if p.price %}
         {{ p.price|ars }} · 
         {% endif %}
@@ -35,8 +35,28 @@
     </li>
     {% empty %}
     <li class="py-4 text-center text-gray-500">
+      {% if productos_existentes %}
+      <p class="mb-3">El producto ya existe en inventario con stock disponible:</p>
+      <ul class="divide-y border rounded-lg mb-4 text-left">
+        {% for p in productos_existentes %}
+        <li class="flex justify-between items-center px-4 py-2">
+          <div>
+            <span class="font-medium text-on-surface">{{ p.name }}</span>
+            <span class="ml-2 text-sm">({{ p.category }})</span>
+          </div>
+          <div class="flex items-center gap-4">
+            <span class="text-sm">Stock: {{ p.quantity }}</span>
+            {% if p.price %}{{ p.price|ars }}{% endif %}
+            <a href="{% url 'product_update' p.pk %}?next={% url 'purchase_list' %}" class="text-primary hover:underline text-sm font-medium">Ir al producto</a>
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+      <p class="mb-3">¿No es el que buscas? Creá uno nuevo:</p>
+      {% else %}
       No se encontraron productos.
-      <a href="{% url 'product_create' %}?next={% url 'purchase_list' %}" class="ml-2 inline-block px-4 py-2 bg-primary text-white rounded text-sm hover:bg-primary-container hover:text-on-primary-fixed transition-colors">
+      {% endif %}
+      <a href="{% url 'product_create' %}?next={% url 'purchase_list' %}" class="inline-block px-4 py-2 bg-primary text-white rounded text-sm hover:bg-primary-container hover:text-on-primary-fixed transition-colors">
         + Agregar producto
       </a>
     </li>
