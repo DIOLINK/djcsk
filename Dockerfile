@@ -17,7 +17,7 @@ ENV PYTHONUNBUFFERED 1
 WORKDIR /app
 COPY requirements.txt ./
 RUN pip install --upgrade pip && pip install -r requirements.txt
-# Copiamos source Django, estáticos y salida node-build
+COPY --from=nodebuild /app/static/css/tailwind.css /app/static/css/tailwind.css
 COPY . .
 # Expone puerto por defecto
 EXPOSE 8000
