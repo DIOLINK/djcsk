@@ -204,7 +204,9 @@ Product (Producto)
   ├── unit: Char(32) default="Unidad"
   ├── quantity: Integer default=0
   ├── min_stock: Integer default=1
+  ├── price: Decimal(8,2) default=0
   ├── active: Boolean default=True
+  └── ordering: ['name'] (alfabético)
 
 Purchase (Compra)
   ├── id: BigAuto (PK)
@@ -325,24 +327,29 @@ docker compose up
 ### 8.3 Flujo de productos
 
 1. Usuario accede a `/productos/` → `ProductListView`
-2. La vista carga productos con filtros opcionales por nombre, categoría, stock
-3. Botón "Nuevo Producto" → `/productos/nuevo/` → `ProductCreateView`
-4. Al guardar, redirige a lista de productos
-5. Botón "Editar" → `/productos/<id>/editar/` → `ProductUpdateView`
+2. Productos se muestran en **orden alfabético** (por `name`)
+3. Filtros por nombre, categoría, stock mínimo/máximo con botón **×** para limpiar cada campo
+4. Precios se muestran en formato **ARS** (`$ 1.250,00`) usando el filtro `|ars`
+5. Botón "Nuevo Producto" → `/productos/nuevo/` → `ProductCreateView`
+6. Al guardar, muestra **toast de éxito** y redirige a lista de productos
+7. Botón "Editar" → `/productos/<id>/editar/` → `ProductUpdateView`
+8. El input de precio al recibir foco selecciona todo el contenido automáticamente
+9. Si se accede desde compras con `?next=/compras/`, al guardar redirige de vuelta a compras
 
-### 8.4 Flujo de compras (lógica especial)
+### 8.4 Flujo de compras
 
-La lista de compras tiene un comportamiento particular:
+La lista de compras muestra productos con stock agotado (`quantity <= 0`):
 
-1. Al acceder a `/compras/` → `PurchaseListView.get()` se ejecuta
-2. **Paso automático**: Busca todos los productos con `quantity=0`
-3. Para cada producto sin stock, crea una compra "ficticia" (`quantity=0, price=0`)
-   - Usa el superusuario como `user` de la compra
-   - Solo la crea si no existe ya una compra con `quantity=0` para ese producto
-4. Luego el `get_queryset()` filtra: **solo muestra compras de productos con `quantity=0`**
-5. Esto hace que la lista de compras funcione como "lista de cosas por comprar"
+1. Usuario accede a `/compras/` → `PurchaseListView`
+2. El `get_queryset()` filtra productos con `quantity__lte=0`
+3. Filtros por nombre y categoría, con botón **×** para limpiar
+4. Botón **Reponer** → redirige a editar producto con `?next=/compras/`
+5. Al guardar la edición, vuelve automáticamente a `/compras/` para seguir reponiendo
+6. Si la búsqueda no encuentra resultados, **verifica si el producto existe con stock**:
+   - Si existe: muestra lista de coincidencias con link "Ir al producto"
+   - Si no existe: muestra botón "+ Agregar producto" que redirige a crear producto y vuelve a compras
 
-> **Importante:** La lista de compras solo muestra compras asociadas a productos sin stock (`product__quantity=0`). No es un historial completo de compras.
+> **Importante:** La vista ya no crea compras automáticamente en GET. La lista refleja directamente productos con `quantity <= 0`.
 
 ### 8.5 CRUD de categorías
 
@@ -392,7 +399,55 @@ La sidebar usa CSS transitions para abrir/cerrar en móvil (clase `drawer-open` 
 
 ---
 
-## 10. APIs y cómo extenderlas
+## 10. Sistema de notificaciones (Toast)
+
+### 10.1 Toast flotantes
+
+Las notificaciones al usuario se muestran como toasts flotantes en la esquina superior derecha:
+
+- **Posición:** `fixed` top-right, no empuja el contenido
+- **Animación:** slide-in desde la derecha al aparecer, fade-out + slide-out al desaparecer
+- **Duración:** 2 segundos, luego auto-dismiss
+- **Cierre manual:** botón **×** (ícono `close`) en cada toast
+- **Tipos:** `success` (verde), `error` (rojo), `info` (azul)
+- **Móvil:** ancho al 85% de la pantalla, texto con wrap automático
+
+### 10.2 Disparar toasts desde el backend
+
+Usar el sistema de mensajes de Django:
+
+```python
+from django.contrib import messages
+
+messages.success(request, 'Producto creado correctamente.')
+messages.error(request, 'No se puede eliminar la categoría.')
+```
+
+Todas las vistas CRUD (`CreateView` y `UpdateView`) ya disparan toast de éxito.
+
+### 10.3 Disparar toasts desde JavaScript
+
+Función global disponible en todas las páginas:
+
+```javascript
+showToast('Error al guardar', 'error');
+showToast('Operación exitosa', 'success');
+showToast('Información', 'info');
+```
+
+### 10.4 Filtro de precios (`|ars`)
+
+Template filter en `inventory/templatetags/price_filters.py`:
+
+```django
+{% load price_filters %}
+{{ producto.price|ars }}
+```
+
+Formato peso argentino: `$ 1.250,00` (punto para miles, coma para decimales).
+
+---
+## 11. APIs y cómo extenderlas
 
 Si necesitas agregar un endpoint nuevo:
 
@@ -423,7 +478,7 @@ router.register(r'suppliers', SupplierViewSet)
 
 ---
 
-## 11. Cómo crear una nueva página web
+## 12. Cómo crear una nueva página web
 
 1. Crea el template HTML en `inventory/templates/`
 2. Extiende `base.html`: `{% extends "base.html" %}`
@@ -433,7 +488,7 @@ router.register(r'suppliers', SupplierViewSet)
 
 ---
 
-## 12. Tests
+## 13. Tests
 
 ### Ejecutar tests
 
@@ -476,7 +531,7 @@ class PurchaseTest(TestCase):
 
 ---
 
-## 13. Seed data (datos iniciales)
+## 14. Seed data (datos iniciales)
 
 ### Categorías semilla
 
@@ -496,7 +551,7 @@ Los archivos en `import/` se cargan automáticamente al arrancar si `PRELOAD_IMP
 
 ---
 
-## 14. Configuración de Django (settings.py)
+## 15. Configuración de Django (settings.py)
 
 Archivo: `pupistock/settings.py`
 
@@ -524,7 +579,7 @@ Archivo: `pupistock/settings.py`
 
 ---
 
-## 15. Dockerfile (multi-etapa)
+## 16. Dockerfile (multi-etapa)
 
 El Dockerfile tiene 3 etapas:
 
@@ -536,7 +591,7 @@ El Dockerfile tiene 3 etapas:
 
 ---
 
-## 16. Dependencias
+## 17. Dependencias
 
 ### Python (`requirements.txt`)
 
@@ -559,7 +614,7 @@ El Dockerfile tiene 3 etapas:
 
 ---
 
-## 17. Preguntas frecuentes
+## 18. Preguntas frecuentes
 
 ### Q: ¿Por qué no se ven mis cambios de CSS?
 
@@ -583,7 +638,7 @@ Las migraciones no se ejecutaron. Corre `python manage.py migrate`.
 
 ---
 
-## 18. Contacto y referencias
+## 19. Contacto y referencias
 
 - **Repo:** `https://github.com/DIOLINK/djcsk`
 - **Documentación adicional:** `doc/backlog.md` (issues conocidos y pendientes)
