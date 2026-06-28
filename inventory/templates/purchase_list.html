@@ -1,4 +1,4 @@
-{% extends "base.html" %} {% block content %}
+{% extends "base.html" %}{% load price_filters %}{% block content %}
 <div class="w-full max-w-4xl mx-auto py-8 px-4">
   <h2 class="text-2xl font-semibold text-primary mb-4">Compras</h2>
   <p class="text-sm text-gray-500 mb-4">Productos con stock agotado que necesitan reposición</p>
@@ -26,10 +26,10 @@
         <span class="ml-2 text-gray-700">| {{ p.category }}</span>
       </div>
       <div>
-        <span class="mr-2">Stock: {{ p.quantity }}</span>
         {% if p.price %}
-        <span class="mr-2">· ${{ p.price }}</span>
+        {{ p.price|ars }} · 
         {% endif %}
+        <span class="mr-2">Stock: {{ p.quantity }}</span>
         <a class="text-accent ml-2" href="{% url 'product_update' p.pk %}?next={% url 'purchase_list' %}">Reponer</a>
       </div>
     </li>
