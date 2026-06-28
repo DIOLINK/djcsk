@@ -1,9 +1,12 @@
 {% extends "base.html" %} {% block content %}
+<a href="{% url 'category_create' %}?next={{ request.path }}" title="Agregar categoría" onclick="guardarEstadoFormulario(); return true;" class="fixed bottom-6 right-6 z-50 w-14 h-14 bg-primary text-white rounded-full shadow-lg hover:bg-primary-container hover:text-on-primary-fixed transition-colors flex items-center justify-center">
+  <span class="material-symbols-outlined text-2xl">category</span>
+</a>
 <div class="w-full max-w-lg mx-auto py-8">
   <h2 class="text-2xl font-semibold text-primary mb-4">
     {% if form.instance.pk %}Editar{% else %}Nuevo{% endif %} Producto
   </h2>
-  <form method="post" class="space-y-4">
+  <form method="post" class="space-y-4" id="producto-form">
     {% csrf_token %}{% for field in form %}
     <div class="mb-4">
       <label
@@ -31,8 +34,41 @@
   </form>
 </div>
 <script>
-  document.getElementById('id_price').addEventListener('focus', function () {
-    this.select();
-  });
+  (function() {
+    var key = 'producto_form_data';
+    var form = document.getElementById('producto-form');
+    var data = sessionStorage.getItem(key);
+    if (data && !form.querySelector('[name=csrfmiddlewaretoken]').value) {
+      return;
+    }
+    if (data) {
+      try {
+        var saved = JSON.parse(data);
+        for (var name in saved) {
+          var el = form.querySelector('[name=' + name + ']');
+          if (el) {
+            el.value = saved[name];
+            el.dispatchEvent(new Event('change', { bubbles: true }));
+          }
+        }
+      } catch(e) {}
+    }
+
+    window.guardarEstadoFormulario = function() {
+      if (!form) return;
+      var estado = {};
+      var fields = form.querySelectorAll('input, select, textarea');
+      for (var i = 0; i < fields.length; i++) {
+        if (fields[i].name && fields[i].name !== 'csrfmiddlewaretoken') {
+          estado[fields[i].name] = fields[i].value;
+        }
+      }
+      sessionStorage.setItem(key, JSON.stringify(estado));
+    };
+
+    document.getElementById('id_price').addEventListener('focus', function () {
+      this.select();
+    });
+  })();
 </script>
 {% endblock %}

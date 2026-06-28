@@ -19,7 +19,12 @@ services:
       - DJANGO_SUPERUSER_PASSWORD=${SU_PASSWORD}
       - DJANGO_SUPERUSER_EMAIL=${SU_EMAIL}
     command: >
-      sh -c "./wait-for-it.sh db:5432 -- python manage.py migrate && python manage.py collectstatic --noinput && python import_products.py && python manage.py createsuperuser --noinput || true && gunicorn pupistock.wsgi:application --bind 0.0.0.0:8000"
+      sh -c "./wait-for-it.sh db:5432 --
+             python manage.py migrate &&
+             python manage.py collectstatic --noinput &&
+             python manage.py import_products &&
+             python manage.py createsuperuser --noinput || true &&
+             gunicorn pupistock.wsgi:application --bind 0.0.0.0:8000"
     volumes:
       - .:/app
     ports:

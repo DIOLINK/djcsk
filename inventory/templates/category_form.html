@@ -19,7 +19,7 @@
     <button type="submit" class="px-4 py-2 bg-primary text-white rounded">
       Guardar
     </button>
-    <a href="{% url 'category_list' %}" class="ml-4">Cancelar</a>
+    <a href="{% if request.GET.next %}{{ request.GET.next }}{% else %}{% url 'category_list' %}{% endif %}" class="ml-4">Cancelar</a>
   </form>
 </div>
 {% endblock %}
