@@ -23,10 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-)xlu=#a4ny%kw)yek7#bxn%b#qzbt8!ud58%njlw1@-erbp*y4'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# SECRET_KEY y DEBUG se leen de .env vía django-environ (líneas 84-100)
+SECRET_KEY = None
+DEBUG = False
 
 ALLOWED_HOSTS = [
     "localhost",
@@ -91,6 +90,7 @@ env = environ.Env(
     DB_PORT=(str, '5432'),
     DJANGO_ALLOWED_HOSTS=(str, 'localhost,127.0.0.1'),
     LANGUAGE_CODE=(str, 'es'),
+    CSRF_TRUSTED_ORIGINS=(str, ''),
 )
 
 # Leer .env
@@ -99,6 +99,7 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = env('SECRET_KEY')
 DEBUG = env('DEBUG')
 ALLOWED_HOSTS = env('DJANGO_ALLOWED_HOSTS').split(',')
+LOGIN_URL = 'login'
 
 DATABASES = {
     'default': {
@@ -174,5 +175,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = '/'
 # Django >=4.0 acepta lista de hosts con schema
 CSRF_TRUSTED_ORIGINS = [
-    origin.strip() for origin in os.environ.get("CSRF_TRUSTED_ORIGINS", "").split(",") if origin
+    origin.strip() for origin in env('CSRF_TRUSTED_ORIGINS', default='').split(",") if origin
 ]
