@@ -168,6 +168,11 @@ class PurchaseListView(LoginRequiredMixin, ListView):
         ctx = super().get_context_data(**kwargs)
         ctx["categories"] = Category.objects.all()
         ctx["filtros"] = self.request.GET
+        nombre = self.request.GET.get("nombre")
+        if nombre and not ctx["products"]:
+            ctx["productos_existentes"] = Product.objects.filter(
+                name__icontains=nombre, quantity__gt=0
+            )
         return ctx
 
 

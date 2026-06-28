@@ -11,5 +11,5 @@ class ProductForm(forms.ModelForm):
             "category": forms.Select(attrs={"class": "w-full"}),
             "quantity": forms.NumberInput(attrs={"class": "w-full"}),
             "min_stock": forms.NumberInput(attrs={"class": "w-full"}),
-            "price": forms.NumberInput(attrs={"class": "w-full"}),
+            "price": forms.NumberInput(attrs={"class": "w-full pl-7"}),
         }
