@@ -1,12 +1,12 @@
-# [DJCSK](https://coherent-lividly-unclaimed.ngrok-free.dev/accounts/login/#) - Prueba de Concepto Django + Ngrok + Docker
+# PupiStock — Prueba de Concepto Django + Ngrok + Docker
 
-## 🚀 Despliegue rápido
+## Despliegue rápido
 
 Este proyecto te permite levantar una app Django completa con PostgreSQL y exponerla rápidamente a internet usando [ngrok](https://ngrok.com/) como túnel, **sin necesidad de dominio ni configuración extra**.
 
 ---
 
-## ⚡ Pasos para correr el proyecto
+## Pasos para correr el proyecto
 
 1. **Clona este repositorio**
 
@@ -17,10 +17,8 @@ Este proyecto te permite levantar una app Django completa con PostgreSQL y expon
 
 2. **Configura el archivo `.env`** (ya hay ejemplo funcionando)
    - Cambia las variables si lo deseas.
-   - Agrega tu token de ngrok (regístrese gratis en [ngrok.com](https://ngrok.com/) y copia `NGROK_AUTHTOKEN`).
+   - Agrega tu token de ngrok (regístrate gratis en [ngrok.com](https://ngrok.com/) y copia `NGROK_AUTHTOKEN`).
    - Cuando ngrok genere una URL nueva (~cada reinicio), cópiala tanto en `DJANGO_ALLOWED_HOSTS` como en `CSRF_TRUSTED_ORIGINS`:
-
-     Ejemplo:
 
      ```env
      DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1,0.0.0.0,xxxxx.ngrok-free.dev
@@ -54,14 +52,14 @@ Este proyecto te permite levantar una app Django completa con PostgreSQL y expon
 
 ---
 
-## 🔎 Scripts útiles
+## Scripts útiles
 
 - `wait_for_ngrok_url.sh`: Espera y muestra la URL ngrok automáticamente.
 - `print_ngrok_url.sh`: Imprime la URL actual (si ya está en logs).
 
 ---
 
-## 📝 Notas
+## Notas
 
 - Cada vez que se reinicia ngrok (o Docker Compose), la URL puede cambiar.
 - Para pruebas puedes dejar:
@@ -72,12 +70,13 @@ Este proyecto te permite levantar una app Django completa con PostgreSQL y expon
 
 ---
 
-## ✨ Listo para usar
+## Documentación
 
-Eso es todo ¡Listo para pruebas o demos!
+Para entender el proyecto a fondo (modelos, flujo, arquitectura, API), consultá la documentación para mantenimiento:
+
+- **[doc/doc-proyect.md](doc/doc-proyect.md)** — Guía completa para developers
+- **[doc/backlog.md](doc/backlog.md)** — Issues conocidos y pendientes
 
 ---
 
-# Creditos
-
-Creado para pruebas rápidas con Django y Ngrok.
+Eso es todo ¡Listo para pruebas o demos!
