@@ -1,5 +1,5 @@
 {% extends "base.html" %} {% block content %}
-<div class="max-w-2xl mx-auto py-8">
+<div class="w-full max-w-4xl mx-auto py-8 px-4">
   <h2 class="text-2xl font-semibold text-primary mb-4">Productos</h2>
   <a
     class="inline-block mb-4 px-4 py-2 bg-primary text-white rounded"
@@ -28,16 +28,23 @@
         <span class="font-bold">{{ p.name }}</span>
         <span class="ml-2 text-gray-700">| {{ p.category }}</span>
       </div>
-      <div>
-        <span class="mr-2">Stock: {{ p.quantity }}</span>
-        <a class="text-accent ml-2" href="{% url 'product_update' p.pk %}"
-          >Editar</a
-        >
+      <div class="flex items-center gap-3">
+        <span>Stock: {{ p.quantity }}</span>
+        {% if p.price %}
+        <span class="text-gray-600">${{ p.price }}</span>
+        {% endif %}
+        <form method="post" action="{% url 'product_delete' p.pk %}" onsubmit="return confirm('¿Eliminar el producto &quot;{{ p.name }}&quot;?')" class="inline">
+          {% csrf_token %}
+          <button type="submit" title="Eliminar" class="text-red-400 hover:text-red-600 transition-colors">
+            <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 0,'wght' 300">delete</span>
+          </button>
+        </form>
+        <a class="text-accent hover:underline" href="{% url 'product_update' p.pk %}">Editar</a>
       </div>
     </li>
     {% empty %}
     <li>No hay productos.</li>
     {% endfor %}
   </ul>
-</div>
+</>
 {% endblock %}

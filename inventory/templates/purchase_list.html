@@ -1,13 +1,9 @@
 {% extends "base.html" %} {% block content %}
-<div class="max-w-2xl mx-auto py-8">
+<div class="w-full max-w-4xl mx-auto py-8 px-4">
   <h2 class="text-2xl font-semibold text-primary mb-4">Compras</h2>
-  <a
-    class="inline-block mb-4 px-4 py-2 bg-primary text-white rounded"
-    href="{% url 'purchase_create' %}"
-    >+ Registrar Compra</a
-  >
+  <p class="text-sm text-gray-500 mb-4">Productos con stock agotado que necesitan reposición</p>
   <form method="get" class="mb-4 flex flex-wrap gap-2">
-    <input type="text" name="nombre" value="{{ filtros.nombre }}" placeholder="Producto" class="border p-1 rounded">
+    <input type="text" name="nombre" value="{{ filtros.nombre }}" placeholder="Nombre" class="border p-1 rounded">
     <select name="categoria" class="border p-1 rounded">
       <option value="">Categorías</option>
       {% for cat in categories %}
@@ -15,24 +11,25 @@
       </option>
       {% endfor %}
     </select>
-    <input type="number" name="quantity" value="{{ filtros.quantity }}" placeholder="Cantidad exacta"
-      class="border p-1 w-32 rounded">
-    <button type="submit" class="px-4 py-2 text-white rounded primary-container">Filtrar</button>
+    <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded">Filtrar</button>
   </form>
   <ul class="divide-y">
-    {% for c in purchases %}
-    <li class="flex flex-col sm:flex-row justify-between py-2">
-      <span
-        ><span class="font-bold producto-tachable">{{ c.product }} </span>- {{ c.quantity }} u · ${{ c.price|default_if_none:"0" }}<span class="ml-2 text-gray-700"
-          >{% if c.store %}| {{ c.store }}{% endif %}</span
-        ></span
-      >
-      <a class="text-accent ml-2" href="{% url 'purchase_update' c.pk %}"
-        >Editar</a
-      >
+    {% for p in products %}
+    <li class="flex flex-col sm:flex-row sm:justify-between py-2">
+      <div>
+        <span class="font-bold producto-tachable">{{ p.name }}</span>
+        <span class="ml-2 text-gray-700">| {{ p.category }}</span>
+      </div>
+      <div>
+        <span class="mr-2">Stock: {{ p.quantity }}</span>
+        {% if p.price %}
+        <span class="mr-2">· ${{ p.price }}</span>
+        {% endif %}
+        <a class="text-accent ml-2" href="{% url 'product_update' p.pk %}">Reponer</a>
+      </div>
     </li>
     {% empty %}
-    <li>No hay compras cargadas.</li>
+    <li class="py-4 text-center text-gray-500">No hay productos pendientes de compra.</li>
     {% endfor %}
   </ul>
 </div>

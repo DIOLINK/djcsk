@@ -1,9 +1,14 @@
 from django import forms
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
+from django.db.models import Count
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
+from django.views import View
 from django.views.generic import CreateView, ListView, TemplateView, UpdateView
 
+from .forms import ProductForm
 from .models import Category, Product, Purchase
 
 
@@ -26,6 +31,9 @@ class CategoryListView(LoginRequiredMixin, ListView):
     template_name = "category_list.html"
     context_object_name = "categories"
 
+    def get_queryset(self):
+        return Category.objects.annotate(product_count=Count('products'))
+
 
 class CategoryCreateView(LoginRequiredMixin, CreateView):
     model = Category
@@ -33,12 +41,34 @@ class CategoryCreateView(LoginRequiredMixin, CreateView):
     template_name = "category_form.html"
     success_url = reverse_lazy('category_list')
 
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, f'Categoría "{self.object.name}" creada correctamente.')
+        return response
+
 
 class CategoryUpdateView(LoginRequiredMixin, UpdateView):
     model = Category
     fields = ["name"]
     template_name = "category_form.html"
     success_url = reverse_lazy('category_list')
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, f'Categoría "{self.object.name}" actualizada correctamente.')
+        return response
+
+
+class CategoryDeleteView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        category = get_object_or_404(Category, pk=pk)
+        if category.products.exists():
+            messages.error(request, f'No se puede eliminar "{category.name}" porque tiene productos asociados.')
+        else:
+            name = category.name
+            category.delete()
+            messages.success(request, f'Categoría "{name}" eliminada correctamente.')
+        return redirect('category_list')
 
 # Producto CRUD
 
@@ -74,54 +104,52 @@ class ProductListView(LoginRequiredMixin, ListView):
 
 class ProductCreateView(LoginRequiredMixin, CreateView):
     model = Product
-    fields = ["name", "category", "unit", "quantity", "min_stock", "active"]
+    form_class = ProductForm
     template_name = "product_form.html"
     success_url = reverse_lazy('product_list')
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, f'Producto "{self.object.name}" creado correctamente.')
+        return response
 
 
 class ProductUpdateView(LoginRequiredMixin, UpdateView):
     model = Product
-    fields = ["name", "category", "unit", "quantity", "min_stock", "active"]
+    form_class = ProductForm
     template_name = "product_form.html"
     success_url = reverse_lazy('product_list')
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, f'Producto "{self.object.name}" actualizado correctamente.')
+        return response
+
+
+class ProductDeleteView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        product = get_object_or_404(Product, pk=pk)
+        name = product.name
+        product.delete()
+        messages.success(request, f'Producto "{name}" eliminado correctamente.')
+        return redirect('product_list')
 
 # Compra CRUD
 
 
 class PurchaseListView(LoginRequiredMixin, ListView):
-    model = Purchase
+    model = Product
     template_name = "purchase_list.html"
-    context_object_name = "purchases"
-    ordering = ['-date']
-
-    def get(self, request, *args, **kwargs):
-        from django.contrib.auth import get_user_model
-        User = get_user_model()
-        # Paso 1: Encuentra productos con stock=0
-        faltantes = Product.objects.filter(quantity=0)
-        for prod in faltantes:
-            existe = Purchase.objects.filter(product=prod, quantity=0).exists()
-            if not existe:
-                user = User.objects.filter(is_superuser=True).first() or User.objects.first()
-                if user is not None:
-                    Purchase.objects.create(product=prod, quantity=0, price=0, store="", user=user)
-                else:
-                    print("No hay usuario para asignar a la compra automática")
-        # Paso 3: Continúa con el ListView estándar (usará get_queryset)
-        return super().get(request, *args, **kwargs)
-
+    context_object_name = "products"
 
     def get_queryset(self):
-        qs = Purchase.objects.filter(product__quantity=0)
+        qs = Product.objects.filter(quantity__lte=0)
         name = self.request.GET.get("nombre")
         category = self.request.GET.get("categoria")
-        quantity = self.request.GET.get("cantidad")
         if name:
-            qs = qs.filter(product__name__icontains=name)
+            qs = qs.filter(name__icontains=name)
         if category:
-            qs = qs.filter(product__category__id=category)
-        if quantity:
-            qs = qs.filter(quantity=quantity)
+            qs = qs.filter(category__id=category)
         return qs
 
     def get_context_data(self, **kwargs):
@@ -139,7 +167,12 @@ class PurchaseCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.user = self.request.user
-        return super().form_valid(form)
+        response = super().form_valid(form)
+        product = form.instance.product
+        product.quantity += form.cleaned_data['quantity']
+        product.save()
+        messages.success(self.request, 'Compra registrada correctamente.')
+        return response
 
 
 class PurchaseUpdateView(LoginRequiredMixin, UpdateView):
@@ -147,3 +180,25 @@ class PurchaseUpdateView(LoginRequiredMixin, UpdateView):
     fields = ["product", "quantity", "price", "store"]
     template_name = "purchase_form.html"
     success_url = reverse_lazy('purchase_list')
+
+    def form_valid(self, form):
+        old_quantity = self.get_object().quantity
+        old_product = self.get_object().product
+
+        response = super().form_valid(form)
+
+        new_quantity = form.instance.quantity
+        new_product = form.instance.product
+
+        if old_product.pk != new_product.pk:
+            old_product.quantity -= old_quantity
+            old_product.save()
+            new_product.quantity += new_quantity
+            new_product.save()
+        else:
+            delta = new_quantity - old_quantity
+            new_product.quantity += delta
+            new_product.save()
+
+        messages.success(self.request, 'Compra actualizada correctamente.')
+        return response
