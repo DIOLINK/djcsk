@@ -26,53 +26,53 @@
         theme: {
           extend: {
             colors: {
-              'tertiary-container': '#d47070',
-              'surface-container-low': '#f6f0e8',
-              'surface-variant': '#ece6dc',
-              'on-secondary': '#ffffff',
-              'on-primary-fixed-variant': '#8a4518',
-              'surface-container-high': '#ece6dc',
-              'on-tertiary-fixed-variant': '#6e3030',
-              'on-secondary-fixed-variant': '#504840',
-              tertiary: '#8c3c3c',
-              'on-tertiary-container': '#3a2020',
-              'surface-dim': '#dcd6cc',
-              background: '#faf5ee',
-              surface: '#faf5ee',
-              'primary-fixed-dim': '#f0a878',
-              'on-primary-container': '#fbe8d8',
-              'surface-bright': '#faf5ee',
-              'secondary-fixed': '#eae2da',
-              'on-tertiary-fixed': '#2e1515',
-              'on-surface': '#3a302a',
-              'on-primary-fixed': '#401a08',
-              'on-background': '#3a302a',
-              'on-secondary-fixed': '#2a2420',
-              'tertiary-fixed-dim': '#e8a0a0',
-              'inverse-primary': '#f0a878',
-              'primary-fixed': '#fbe8d8',
-              'on-primary': '#ffffff',
-              secondary: '#78706a',
-              'on-error-container': '#7a1a10',
-              'surface-container': '#f2ece4',
-              'inverse-on-surface': '#faf5ee',
-              primary: '#c2652a',
-              'error-container': '#fce4e0',
-              'on-tertiary': '#ffffff',
-              'on-secondary-container': '#605850',
-              'surface-container-lowest': '#ffffff',
-              'outline-variant': '#d8d0c8',
-              'secondary-container': '#eae2da',
-              'surface-tint': '#c2652a',
-              'primary-container': '#e08850',
-              'on-error': '#ffffff',
-              'inverse-surface': '#3a302a',
-              'secondary-fixed-dim': '#cec6be',
-              'on-surface-variant': '#605850',
-              error: '#c0392b',
-              'tertiary-fixed': '#fce0e0',
-              'surface-container-highest': '#e6e0d6',
-              outline: '#9a9088',
+              'tertiary-container': 'var(--tertiary-container)',
+              'surface-container-low': 'var(--surface-container-low)',
+              'surface-variant': 'var(--surface-variant)',
+              'on-secondary': 'var(--on-secondary)',
+              'on-primary-fixed-variant': 'var(--on-primary-fixed-variant)',
+              'surface-container-high': 'var(--surface-container-high)',
+              'on-tertiary-fixed-variant': 'var(--on-tertiary-fixed-variant)',
+              'on-secondary-fixed-variant': 'var(--on-secondary-fixed-variant)',
+              tertiary: 'var(--tertiary)',
+              'on-tertiary-container': 'var(--on-tertiary-container)',
+              'surface-dim': 'var(--surface-dim)',
+              background: 'var(--background)',
+              surface: 'var(--surface)',
+              'primary-fixed-dim': 'var(--primary-fixed-dim)',
+              'on-primary-container': 'var(--on-primary-container)',
+              'surface-bright': 'var(--surface-bright)',
+              'secondary-fixed': 'var(--secondary-fixed)',
+              'on-tertiary-fixed': 'var(--on-tertiary-fixed)',
+              'on-surface': 'var(--on-surface)',
+              'on-primary-fixed': 'var(--on-primary-fixed)',
+              'on-background': 'var(--on-background)',
+              'on-secondary-fixed': 'var(--on-secondary-fixed)',
+              'tertiary-fixed-dim': 'var(--tertiary-fixed-dim)',
+              'inverse-primary': 'var(--inverse-primary)',
+              'primary-fixed': 'var(--primary-fixed)',
+              'on-primary': 'var(--on-primary)',
+              secondary: 'var(--secondary)',
+              'on-error-container': 'var(--on-error-container)',
+              'surface-container': 'var(--surface-container)',
+              'inverse-on-surface': 'var(--inverse-on-surface)',
+              primary: 'var(--primary)',
+              'error-container': 'var(--error-container)',
+              'on-tertiary': 'var(--on-tertiary)',
+              'on-secondary-container': 'var(--on-secondary-container)',
+              'surface-container-lowest': 'var(--surface-container-lowest)',
+              'outline-variant': 'var(--outline-variant)',
+              'secondary-container': 'var(--secondary-container)',
+              'surface-tint': 'var(--surface-tint)',
+              'primary-container': 'var(--primary-container)',
+              'on-error': 'var(--on-error)',
+              'inverse-surface': 'var(--inverse-surface)',
+              'secondary-fixed-dim': 'var(--secondary-fixed-dim)',
+              'on-surface-variant': 'var(--on-surface-variant)',
+              error: 'var(--error)',
+              'tertiary-fixed': 'var(--tertiary-fixed)',
+              'surface-container-highest': 'var(--surface-container-highest)',
+              outline: 'var(--outline)',
             },
             borderRadius: {
               DEFAULT: '0.25rem',
@@ -94,10 +94,108 @@
       };
     </script>
     <style>
+      :root {
+        --background: #faf5ee;
+        --surface: #faf5ee;
+        --surface-bright: #faf5ee;
+        --surface-container: #f2ece4;
+        --surface-container-low: #f6f0e8;
+        --surface-container-lowest: #ffffff;
+        --surface-container-high: #ece6dc;
+        --surface-container-highest: #e6e0d6;
+        --surface-dim: #dcd6cc;
+        --surface-variant: #ece6dc;
+        --surface-tint: #c2652a;
+        --on-surface: #3a302a;
+        --on-background: #3a302a;
+        --on-surface-variant: #605850;
+        --primary: #c2652a;
+        --primary-container: #e08850;
+        --primary-fixed: #fbe8d8;
+        --primary-fixed-dim: #f0a878;
+        --on-primary: #ffffff;
+        --on-primary-container: #fbe8d8;
+        --on-primary-fixed: #401a08;
+        --on-primary-fixed-variant: #8a4518;
+        --secondary: #78706a;
+        --secondary-container: #eae2da;
+        --secondary-fixed: #eae2da;
+        --secondary-fixed-dim: #cec6be;
+        --on-secondary: #ffffff;
+        --on-secondary-container: #605850;
+        --on-secondary-fixed: #2a2420;
+        --on-secondary-fixed-variant: #504840;
+        --tertiary: #8c3c3c;
+        --tertiary-container: #d47070;
+        --tertiary-fixed: #fce0e0;
+        --tertiary-fixed-dim: #e8a0a0;
+        --on-tertiary: #ffffff;
+        --on-tertiary-container: #3a2020;
+        --on-tertiary-fixed: #2e1515;
+        --on-tertiary-fixed-variant: #6e3030;
+        --error: #c0392b;
+        --error-container: #fce4e0;
+        --on-error: #ffffff;
+        --on-error-container: #7a1a10;
+        --outline: #9a9088;
+        --outline-variant: #d8d0c8;
+        --inverse-primary: #f0a878;
+        --inverse-surface: #3a302a;
+        --inverse-on-surface: #faf5ee;
+      }
+      html.dark {
+        --background: #1b1714;
+        --surface: #1b1714;
+        --surface-bright: #26221e;
+        --surface-container: #211d1a;
+        --surface-container-low: #1d1916;
+        --surface-container-lowest: #100c0a;
+        --surface-container-high: #2b2722;
+        --surface-container-highest: #35312c;
+        --surface-dim: #100c0a;
+        --surface-variant: #2b2722;
+        --surface-tint: #f0a878;
+        --on-surface: #e5dcd0;
+        --on-background: #e5dcd0;
+        --on-surface-variant: #c4bcb0;
+        --primary: #f0a878;
+        --primary-container: #8a4518;
+        --primary-fixed: #fbe8d8;
+        --primary-fixed-dim: #8a4518;
+        --on-primary: #401a08;
+        --on-primary-container: #fbe8d8;
+        --on-primary-fixed: #401a08;
+        --on-primary-fixed-variant: #f0a878;
+        --secondary: #c4bcb0;
+        --secondary-container: #504840;
+        --secondary-fixed: #eae2da;
+        --secondary-fixed-dim: #504840;
+        --on-secondary: #2a2420;
+        --on-secondary-container: #eae2da;
+        --on-secondary-fixed: #2a2420;
+        --on-secondary-fixed-variant: #cec6be;
+        --tertiary: #e8a0a0;
+        --tertiary-container: #6e3030;
+        --tertiary-fixed: #fce0e0;
+        --tertiary-fixed-dim: #6e3030;
+        --on-tertiary: #2e1515;
+        --on-tertiary-container: #fce0e0;
+        --on-tertiary-fixed: #2e1515;
+        --on-tertiary-fixed-variant: #e8a0a0;
+        --error: #ffb4ab;
+        --error-container: #7a1a10;
+        --on-error: #690005;
+        --on-error-container: #fce4e0;
+        --outline: #807870;
+        --outline-variant: #4a423a;
+        --inverse-primary: #c2652a;
+        --inverse-surface: #e5dcd0;
+        --inverse-on-surface: #3a302a;
+      }
       body {
-        background-color: #faf5ee;
+        background-color: var(--background);
         font-family: 'Manrope', Arial, Helvetica, sans-serif;
-        color: #3a302a;
+        color: var(--on-background);
       }
       h1,
       h2,
@@ -115,8 +213,8 @@
       }
       input:focus {
         outline: none;
-        border-color: #c2652a !important;
-        box-shadow: 0 0 0 1px #c2652a;
+        border-color: var(--primary) !important;
+        box-shadow: 0 0 0 1px var(--primary);
       }
       input[name='price'] {
         padding-left: 2rem !important;
@@ -151,31 +249,31 @@
       form input,
       form select,
       form textarea {
-        background-color: #f6f0e8 !important;
-        color: #232220 !important;
+        background-color: var(--surface-container-low) !important;
+        color: var(--on-surface) !important;
         border-radius: 0.75rem !important;
         padding: 0.75rem 1rem !important;
         box-shadow: none !important;
         transition: all 0.2s ease-in-out !important;
         border-width: 1px !important;
         --tw-border-opacity: 1 !important;
-        border-color: rgb(216 208 200 / var(--tw-border-opacity, 1)) !important;
+        border-color: var(--outline-variant) !important;
       }
       /* Custom scrollbar for warm minimalism */
       ::-webkit-scrollbar {
         width: 6px;
       }
       ::-webkit-scrollbar-track {
-        background: #faf5ee;
+        background: var(--background);
       }
       ::-webkit-scrollbar-thumb {
-        background: #d8d0c8;
+        background: var(--outline-variant);
         border-radius: 10px;
       }
       button[type='submit'],
       .btn-submit {
-        background-color: #c2652a; /* primary */
-        color: #fff; /* on-primary */
+        background-color: var(--primary);
+        color: var(--on-primary);
         border-radius: 0.5rem;
         padding: 0.75rem 1.5rem;
         font-weight: 600;
@@ -188,15 +286,15 @@
 
       button[type='submit']:hover,
       .btn-submit:hover {
-        background-color: #e08850; /* primary-container */
-        color: #401a08; /* on-primary-fixed */
+        background-color: var(--primary-container);
+        color: var(--on-primary-fixed);
         transform: translateY(-2px) scale(1.03);
       }
 
       button[type='submit']:active,
       .btn-submit:active {
-        background-color: #a35422; /* darker primary */
-        color: #fff;
+        background-color: var(--on-primary-fixed-variant);
+        color: var(--on-primary);
         transform: scale(0.98);
       }
       .producto-tachable {
@@ -206,6 +304,33 @@
       .producto-tachable.tachado {
         text-decoration: line-through;
         opacity: 0.5;
+      }
+      .theme-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: none;
+        cursor: pointer;
+        background: transparent;
+        color: var(--on-surface);
+        transition:
+          background 0.2s,
+          transform 0.1s;
+      }
+      .theme-toggle:hover {
+        background: var(--surface-container-high);
+      }
+      .theme-toggle:active {
+        transform: scale(0.92);
+      }
+      .theme-toggle-fixed {
+        position: fixed;
+        top: 1rem;
+        right: 1rem;
+        z-index: 100;
       }
       @keyframes slide-in {
         from {
@@ -256,7 +381,7 @@
     {% if request.resolver_match.url_name != 'login' %}
     <!-- Navigation Drawer (Shared Component) -->
     <aside
-      class="fixed left-0 top-0 h-full z-50 -translate-x-full transition-all duration-300 ease-in-out bg-surface border-r border-outline-variant/60 w-64 md:translate-x-0"
+      class="fixed left-0 top-0 h-full z-50 -translate-x-full transition-all duration-300 ease-in-out bg-surface border-r border-outline-variant w-64 md:translate-x-0"
       id="drawer"
     >
       <div class="flex flex-col h-full p-6">
@@ -292,7 +417,7 @@
             <span class="material-symbols-outlined">shopping_cart</span>Compras
           </a>
         </nav>
-        <div class="mt-auto pt-6 border-t border-outline-variant/30">
+        <div class="mt-auto pt-6 border-t border-outline-variant">
           <a
             class="block py-3 px-5 rounded text-accent font-semibold"
             href="{% url 'logout' %}"
@@ -318,7 +443,7 @@
     <div class="min-h-screen flex flex-col">
       {% if request.resolver_match.url_name != 'login' %}
       <header
-        class="sticky top-0 w-full z-30 flex justify-between items-center px-4 bg-surface h-16 shadow-sm border-b border-outline-variant/30"
+        class="sticky top-0 w-full z-30 flex justify-between items-center px-4 bg-surface h-16 shadow-sm border-b border-outline-variant"
       >
         <div class="flex items-center gap-4">
           <button
@@ -328,7 +453,17 @@
             <span class="material-symbols-outlined">menu</span>
           </button>
         </div>
-        <p>Bienvenido, {{ user.username }}</p>
+        <div class="flex items-center gap-3">
+          <button
+            class="theme-toggle"
+            id="themeToggle"
+            onclick="toggleTheme()"
+            aria-label="Cambiar tema"
+          >
+            <span class="material-symbols-outlined" id="themeIcon">light_mode</span>
+          </button>
+          <p>Bienvenido, {{ user.username }}</p>
+        </div>
       </header>
       <!-- TopAppBar (Shared Component) -->
       {% endif %}
@@ -358,12 +493,34 @@
         {% endif %} {% block content %}{% endblock %}
       </main>
       <footer
-        class="{% if request.resolver_match.url_name != 'login' %}md:ml-64{% endif %} mt-6 text-center text-xs text-gray-500 uppercase tracking-wider"
+        class="{% if request.resolver_match.url_name != 'login' %}md:ml-64{% endif %} mt-6 text-center text-xs text-on-surface-variant uppercase tracking-wider opacity-60"
       >
         PupiStock Systems © 2026
       </footer>
     </div>
     <script>
+      (function () {
+        const saved = localStorage.getItem('theme');
+        if (saved === 'dark') {
+          document.documentElement.classList.add('dark');
+        }
+        updateThemeIcon();
+      })();
+
+      function toggleTheme() {
+        const html = document.documentElement;
+        const isDark = html.classList.toggle('dark');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        updateThemeIcon();
+      }
+
+      function updateThemeIcon() {
+        const icon = document.getElementById('themeIcon');
+        if (!icon) return;
+        const isDark = document.documentElement.classList.contains('dark');
+        icon.textContent = isDark ? 'dark_mode' : 'light_mode';
+      }
+
       function toggleDrawer() {
         const drawer = document.getElementById('drawer');
         const scrim = document.getElementById('scrim');
@@ -537,5 +694,16 @@
         _marqueeResizeTimer = setTimeout(initProductMarquee, 200);
       });
     </script>
+    {% if request.resolver_match.url_name == 'login' %}
+    <button
+      class="theme-toggle theme-toggle-fixed"
+      id="themeToggle"
+      onclick="toggleTheme()"
+      aria-label="Cambiar tema"
+      style="background: var(--surface-container); box-shadow: 0 2px 8px rgba(0,0,0,0.12);"
+    >
+      <span class="material-symbols-outlined" id="themeIcon">light_mode</span>
+    </button>
+    {% endif %}
   </body>
 </html>
