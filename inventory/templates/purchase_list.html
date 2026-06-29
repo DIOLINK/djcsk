@@ -3,24 +3,26 @@
   <span class="material-symbols-outlined text-2xl">box_add</span>
 </a>
 <div class="w-full max-w-4xl mx-auto py-8 px-4">
-  <h2 class="text-2xl font-semibold text-primary mb-4">Compras</h2>
-  <p class="text-sm text-gray-500 mb-4">Productos con stock agotado que necesitan reposición</p>
-  <form method="get" class="mb-4 flex flex-wrap gap-2 items-end">
-    <div class="relative">
-      <input type="text" name="nombre" value="{{ filtros.nombre }}" placeholder="Nombre" class="border p-1 rounded pr-7 w-80">
-      {% if filtros.nombre %}
-      <button type="button" onclick="this.previousElementSibling.value='';this.form.submit()" class="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-lg leading-none">&times;</button>
-      {% endif %}
-    </div>
-    <select name="categoria" class="border p-1 rounded">
-      <option value="">Categorías</option>
-      {% for cat in categories %}
-      <option value="{{ cat.id }}" {% if filtros.categoria|default_if_none:""|stringformat:"s" == cat.id|stringformat:"s" %}selected{% endif %}>{{ cat.name }}
-      </option>
-      {% endfor %}
-    </select>
-    <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded">Filtrar</button>
-  </form>
+  <section id="filters" class="mb-4 sticky top-16 z-20 bg-background transition-transform duration-300 pb-2">
+    <h2 class="text-2xl font-semibold text-primary mb-4">Compras</h2>
+    <p class="text-sm text-gray-500 mb-4">Productos con stock agotado que necesitan reposición</p>
+    <form method="get" class="mb-4 flex flex-wrap gap-2 items-end">
+      <div class="relative">
+        <input type="text" name="nombre" value="{{ filtros.nombre }}" placeholder="Nombre" class="border p-1 rounded pr-7 w-80">
+        {% if filtros.nombre %}
+        <button type="button" onclick="this.previousElementSibling.value='';this.form.submit()" class="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-lg leading-none">&times;</button>
+        {% endif %}
+      </div>
+      <select name="categoria" class="border p-1 rounded">
+        <option value="">Categorías</option>
+        {% for cat in categories %}
+        <option value="{{ cat.id }}" {% if filtros.categoria|default_if_none:""|stringformat:"s" == cat.id|stringformat:"s" %}selected{% endif %}>{{ cat.name }}
+        </option>
+        {% endfor %}
+      </select>
+      <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded">Filtrar</button>
+    </form>
+  </section>
   <ul class="divide-y">
     {% for p in products %}
     <li class="flex flex-col sm:flex-row sm:justify-between py-2">

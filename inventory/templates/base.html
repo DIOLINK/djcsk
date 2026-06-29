@@ -354,10 +354,25 @@
         });
       });
 
+      // Hide-on-scroll para la barra de filtros
+      document.addEventListener('DOMContentLoaded', function () {
+        const filters = document.getElementById('filters');
+        if (filters) {
+          let lastScrollY = window.scrollY;
+          window.addEventListener('scroll', function () {
+            const currentScrollY = window.scrollY;
+            if (currentScrollY > lastScrollY && currentScrollY > 120) {
+              filters.style.transform = 'translateY(calc(-100% - 1rem))';
+            } else {
+              filters.style.transform = 'translateY(0)';
+            }
+            lastScrollY = currentScrollY;
+          }, { passive: true });
+        }
+      });
+
       // Si la url coincide con las rutas de categoría, producto o compra, resalta el enlace correspondiente
       document.addEventListener('DOMContentLoaded', function () {
-        // ...tu código aquí...
-
         const currentPath = window.location.pathname;
         const categoryEl = document.getElementById('category');
         const productEl = document.getElementById('product');
