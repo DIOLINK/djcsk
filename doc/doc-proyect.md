@@ -20,15 +20,10 @@
 ```
 DJCSK/
 ├── .env.example              # Plantilla de variables de entorno
-├── Dockerfile                 # Build multi-etapa (Node + Python)
+├── Dockerfile                 # Build single-stage (Python 3.12)
 ├── docker-compose.yml         # 3 servicios: db, web, ngrok
 ├── manage.py                  # Script de gestión Django
 ├── requirements.txt           # Dependencias Python
-├── package.json               # Dependencias Node (solo Tailwind build)
-├── tailwind.config.js         # Configuración de Tailwind
-├── postcss.config.js          # Configuración de PostCSS
-├── import_products.py         # Script de importación CSV de productos
-├── seed_categories.py         # Referencia de seed (no ejecutable)
 ├── wait-for-it.sh             # Script para esperar servicios TCP
 ├── wait_for_ngrok_url.sh      # Script para obtener URL pública de ngrok
 ├── print_ngrok_url.sh         # Script para imprimir URL de ngrok
@@ -119,24 +114,21 @@ Al levantar, Docker Compose ejecuta automáticamente:
 ### 3.2 Sin Docker (desarrollo local)
 
 ```bash
-# Requisitos: Python 3.12, PostgreSQL 15, Node 20+
+# Requisitos: Python 3.12, PostgreSQL 15
 
 # 1. Python
 python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 
-# 2. Node (solo si quieres compilar Tailwind localmente)
-npm install
+# 2. Configurar .env con DB_HOST=localhost
 
-# 3. Configurar .env con DB_HOST=localhost
-
-# 4. Migraciones y datos
+# 3. Migraciones y datos
 python manage.py migrate
 python manage.py seed_categories
 python manage.py createsuperuser
 
-# 5. Correr
+# 4. Correr
 python manage.py runserver
 ```
 
@@ -195,7 +187,8 @@ docker compose logs ngrok
 ```
 Category (Categoría)
   ├── id: BigAuto (PK)
-  └── name: Char(100) único
+  ├── name: Char(100) único
+  └── ordering: ['name'] (alfabético)
 
 Product (Producto)
   ├── id: BigAuto (PK)
@@ -328,13 +321,15 @@ docker compose up
 
 1. Usuario accede a `/productos/` → `ProductListView`
 2. Productos se muestran en **orden alfabético** (por `name`)
-3. Filtros por nombre, categoría, stock mínimo/máximo con botón **×** para limpiar cada campo
-4. Precios se muestran en formato **ARS** (`$ 1.250,00`) usando el filtro `|ars`
-5. Botón "Nuevo Producto" → `/productos/nuevo/` → `ProductCreateView`
-6. Al guardar, muestra **toast de éxito** y redirige a lista de productos
-7. Botón "Editar" → `/productos/<id>/editar/` → `ProductUpdateView`
-8. El input de precio al recibir foco selecciona todo el contenido automáticamente
-9. Si se accede desde compras con `?next=/compras/`, al guardar redirige de vuelta a compras
+3. **Barra de filtros sticky** con hide-on-scroll: se oculta al hacer scroll hacia abajo y reaparece al subir, evitando tener que volver al top para cambiar filtros
+4. Filtros por nombre, categoría, stock mínimo/máximo con botón **×** para limpiar cada campo
+5. Categorías en el dropdown aparecen en **orden alfabético**
+6. Precios se muestran en formato **ARS** (`$ 1.250,00`) usando el filtro `|ars`
+7. Botón "Nuevo Producto" → `/productos/nuevo/` → `ProductCreateView`
+8. Al guardar, muestra **toast de éxito** y redirige a lista de productos
+9. Botón "Editar" → `/productos/<id>/editar/` → `ProductUpdateView`
+10. El input de precio al recibir foco selecciona todo el contenido automáticamente
+11. Si se accede desde compras con `?next=/compras/`, al guardar redirige de vuelta a compras
 
 ### 8.4 Flujo de compras
 
@@ -342,10 +337,12 @@ La lista de compras muestra productos con stock agotado (`quantity <= 0`):
 
 1. Usuario accede a `/compras/` → `PurchaseListView`
 2. El `get_queryset()` filtra productos con `quantity__lte=0`
-3. Filtros por nombre y categoría, con botón **×** para limpiar
-4. Botón **Reponer** → redirige a editar producto con `?next=/compras/`
-5. Al guardar la edición, vuelve automáticamente a `/compras/` para seguir reponiendo
-6. Si la búsqueda no encuentra resultados, **verifica si el producto existe con stock**:
+3. **FAB (botón flotante):** botón redondo abajo-derecha con ícono `box_add` → crea un nuevo producto y al guardar vuelve a la lista de compras
+4. **Barra de filtros sticky** con hide-on-scroll (mismo comportamiento que en productos)
+5. Filtros por nombre y categoría (dropdown alfabético), con botón **×** para limpiar
+6. Botón **Reponer** → redirige a editar producto con `?next=/compras/`
+7. Al guardar la edición, vuelve automáticamente a `/compras/` para seguir reponiendo
+8. Si la búsqueda no encuentra resultados, **verifica si el producto existe con stock**:
    - Si existe: muestra lista de coincidencias con link "Ir al producto"
    - Si no existe: muestra botón "+ Agregar producto" que redirige a crear producto y vuelve a compras
 
@@ -354,9 +351,11 @@ La lista de compras muestra productos con stock agotado (`quantity <= 0`):
 ### 8.5 CRUD de categorías
 
 Similar al flujo de productos pero más simple:
-- `/categorias/` → lista
+- `/categorias/` → lista (ordenada alfabéticamente)
 - `/categorias/nueva/` → crear
 - `/categorias/<id>/editar/` → editar
+- `CategoryCreateView` soporta el parámetro `?next=` para redirigir de vuelta al origen (ej: desde el formulario de producto, al crear una categoría nueva retorna al formulario para seguir cargando). El botón Cancelar en el formulario también respeta `?next=`.
+- **FAB en formulario de producto:** botón flotante con ícono `category` → abre el formulario de categoría nueva con `?next=/productos/nuevo/`. El estado del formulario de producto se preserva vía `sessionStorage` para que al volver no se pierda lo cargado.
 
 ---
 
@@ -392,8 +391,10 @@ La configuración de la paleta de colores y tipografía se define en un `<script
 
 - **Sidebar:** Fixed a la izquierda (260px), con drawer en móvil
 - **Header:** Sticky top con botón hamburguesa en móvil
+- **Barra de filtros:** Sticky debajo del header (`top-16`) con hide-on-scroll (se oculta al bajar, reaparece al subir). Implementado con JS que detecta dirección de scroll y aplica `translateY` con `transition`.
 - **Contenido:** `ml-64` en desktop, ocupa todo el ancho en móvil
 - **Footer:** "PupiStock Systems © 2026"
+- **FAB (botones flotantes):** Botones redondos `fixed bottom-6 right-6` en pantallas de compras y formulario de producto para acciones rápidas
 
 La sidebar usa CSS transitions para abrir/cerrar en móvil (clase `drawer-open` y `scrim-active`).
 
@@ -579,15 +580,21 @@ Archivo: `pupistock/settings.py`
 
 ---
 
-## 16. Dockerfile (multi-etapa)
+## 16. Dockerfile (single-stage)
 
-El Dockerfile tiene 3 etapas:
+El Dockerfile usa una sola etapa (Python 3.12 slim). Tailwind se carga vía CDN, sin necesidad de etapa Node:
 
-1. **base** — Python 3.12 slim
-2. **nodebuild** — Node 20 slim, compila Tailwind CSS
-3. **final** — Imagen final con Python + Gunicorn
-
-**Atención:** La etapa `nodebuild` copia `./pupistock/static_src` y espera un archivo `input.css` que **no existe** en el repositorio. Esto no rompe el build porque la etapa final no copia el output de nodebuild, pero sí falla el paso de `npm ci` y `npx tailwindcss`. Ver `backlog.md`.
+```dockerfile
+FROM python:3.12-slim
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+WORKDIR /app
+COPY requirements.txt ./
+RUN pip install --upgrade pip && pip install -r requirements.txt
+COPY . .
+EXPOSE 8000
+CMD ["gunicorn", "pupistock.wsgi:application", "--bind", "0.0.0.0:8000"]
+```
 
 ---
 
@@ -601,16 +608,9 @@ El Dockerfile tiene 3 etapas:
 | `psycopg2-binary` | Conector PostgreSQL |
 | `django-environ` | Variables de entorno |
 | `djangorestframework` | API REST |
+| `django-filter` | Filtros para DRF |
 | `gunicorn` | Servidor WSGI (producción) |
 | `whitenoise` | Servir estáticos (producción) |
-
-### Node (`package.json`)
-
-| Paquete | Propósito |
-|---|---|
-| `tailwindcss ^3.4.0` | Framework CSS |
-| `postcss ^8.4.24` | Post-procesador CSS |
-| `autoprefixer ^10.4.13` | Prefijos de navegador |
 
 ---
 
@@ -649,4 +649,4 @@ Las migraciones no se ejecutaron. Corre `python manage.py migrate`.
 
 ---
 
-*Documentación generada para mantenimiento del proyecto. Última actualización: junio 2026.*
+*Documentación generada para mantenimiento del proyecto. Última actualización: 28 de junio de 2026.*

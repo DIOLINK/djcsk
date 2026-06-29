@@ -27,7 +27,7 @@
     {% for p in products %}
     <li class="flex flex-col sm:flex-row sm:justify-between py-2">
       <div>
-        <span class="font-bold producto-tachable">{{ p.name }}</span>
+        <span id="producto-{{ p.id }}-label" class="font-bold producto-tachable">{{ p.name }}</span>
         <span class="ml-2 text-gray-700">| {{ p.category }}</span>
       </div>
       <div class="flex justify-between">

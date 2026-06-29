@@ -70,6 +70,19 @@ Este proyecto te permite levantar una app Django completa con PostgreSQL y expon
 
 ---
 
+## Funcionalidades destacadas
+
+- Categorías ordenadas alfabéticamente en todas las vistas y dropdowns
+- Barra de filtros sticky con hide-on-scroll (se oculta al bajar, reaparece al subir)
+- Botones flotantes (FAB) para creación rápida de productos y categorías
+- Navegación con retorno al origen (`?next=`) en flujos de creación
+- Preservación de datos del formulario al crear categoría desde el formulario de producto
+- Toasts de notificación con auto-dismiss
+- Filtros de stock por rango (mínimo/máximo)
+- API REST con filtros, búsqueda y ordenamiento
+
+---
+
 ## Documentación
 
 Para entender el proyecto a fondo (modelos, flujo, arquitectura, API), consultá la documentación para mantenimiento:
